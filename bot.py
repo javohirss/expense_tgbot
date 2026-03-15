@@ -7,10 +7,13 @@ from aiohttp import web
 
 from config import settings
 from services.expense import ExpenseService
+from dotenv import load_dotenv
+load_dotenv()
 
 
 BOT_TOKEN = settings.BOT_TOKEN
-BASE_URL = settings.BASE_URL
+BASE_URL = os.getenv("RENDER_EXTERNAL_URL")
+
 
 if not BOT_TOKEN:
     raise ValueError("BOT_TOKEN not found")
