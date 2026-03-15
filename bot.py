@@ -1,3 +1,4 @@
+import os
 from aiogram import Bot, Dispatcher, Router
 from aiogram.filters import Command, CommandStart
 from aiogram.types import BotCommand, Message
@@ -100,7 +101,9 @@ def main():
     ).register(app, path=WEBHOOK_PATH)
 
     setup_application(app, dp, bot=bot)
-    web.run_app(app, host="127.0.0.1", port=80)
+
+    port = int(os.getenv("PORT", "8000"))
+    web.run_app(app, host="0.0.0.0", port=port)
 
 
 if __name__ == "__main__":
