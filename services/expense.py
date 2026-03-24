@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 from decimal import Decimal
+from google.genai.errors import ServerError
 
 from sqlalchemy import func, insert, select
 
@@ -22,7 +23,18 @@ class ExpenseService:
     async def insert_expenses(cls, telegram_user_id: int, raw_text: str):
         async with MyAsyncSession() as session:
             user = await UserService.get_or_create_user(telegram_user_id)
-            llm_result = await call_llm(raw_text)
+            primary_model = "gemini-3.1-flash-lite-preview"
+            fallback_model = "gemini-3-flash-preview"
+
+            try:
+                llm_result = await call_llm(raw_text, primary_model)
+            except ServerError as e:
+                is_503_unavailable = e.code == 503 and e.status == "UNAVAILABLE"
+                if not is_503_unavailable:
+                    raise
+
+                llm_result = await call_llm(raw_text, fallback_model)
+
             parsed_expenses = llm_result.expenses if llm_result else []
             if not parsed_expenses:
                 return []
