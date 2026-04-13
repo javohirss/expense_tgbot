@@ -53,6 +53,36 @@ class ExpenseService:
             result = await session.execute(query, values)
             await session.commit()
             return result.scalars().all()
+        
+        
+    @classmethod
+    async def get_today_totals(cls, telegram_user_id: int):
+        now = datetime.now(timezone.utc)
+        day_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+
+        async with MyAsyncSession() as session:
+            query = (
+                select(
+                    Expense.category,
+                    func.sum(Expense.amount).label("total_amount"),
+                )
+                .join(User, User.id == Expense.user_id)
+                .where(User.telegram_user_id == telegram_user_id)
+                .where(Expense.created_at >= day_start)
+                .where(Expense.created_at <= now)
+                .group_by(Expense.category)
+                .order_by(Expense.category)
+            )
+            result = await session.execute(query)
+
+            return [
+                {
+                    "category": category,
+                    "total_amount": float(total_amount or Decimal("0")),
+                }
+                for category, total_amount in result.all()
+            ]
+
 
     @classmethod
     async def get_current_month_totals_by_category(cls, telegram_user_id: int):

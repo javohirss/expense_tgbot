@@ -37,7 +37,25 @@ async def month_stats_handler(message: Message):
         return
 
     lines = [f"{item['category']}: {item['total_amount']}" for item in totals]
+    total_amount = sum([item['amount'] for item in totals])
     answer = "Расходы по категориям с начала месяца:\n" + "\n".join(lines)
+    answer += "\n" + f"Итого: {total_amount} сомон"
+    await message.answer(answer)
+
+
+@router.message(Command("today"))
+async def month_stats_handler(message: Message):
+    telegram_user_id = message.from_user.id
+    totals = await ExpenseService.get_today_totals(telegram_user_id)
+
+    if not totals:
+        await message.answer("За текущий день расходов пока нет.")
+        return
+
+    lines = [f"{item['category']}: {item['total_amount']}" for item in totals]
+    total_amount = sum([item['amount'] for item in totals])
+    answer = "Расходы по категориям за сегодняшний день:\n" + "\n".join(lines)
+    answer += "\n" + f"Итого: {total_amount} сомон"
     await message.answer(answer)
 
 
