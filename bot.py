@@ -101,6 +101,7 @@ async def on_startup(bot: Bot) -> None:
     await bot.set_my_commands([
         BotCommand(command="start", description="Запустить бота"),
         BotCommand(command="month", description="Показать траты за текущий месяц"),
+        BotCommand(command="today", description="Показать траты за сегодня")
     ])
     print(f"Webhook set: {WEBHOOK_URL}")
 
