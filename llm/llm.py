@@ -12,10 +12,10 @@ def gemini(model_name: str = "gemini-3.1-flash-lite-preview"):
         api_key=settings.GEMINI_API_KEY
     )
 
-llm = gemini()
 
 
-async def call_llm(user_query: str, output_schema: BaseModel = ExpenseSchema):
+async def call_llm(user_query: str, model_name, output_schema: BaseModel = ExpenseSchema):
+    llm = gemini(model_name)
     messages = ChatPromptTemplate.from_messages([
         ("system", prompt),
         ("user", user_query)
