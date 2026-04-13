@@ -4,8 +4,8 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     BOT_TOKEN: str
     NGROK_BASE_URL: str
-    # DB_URI: str
-    DB_URL: str
+    DB_URI: str
+    # DB_URL: str
     GEMINI_API_KEY: str
 
 
