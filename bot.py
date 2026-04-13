@@ -37,7 +37,7 @@ async def month_stats_handler(message: Message):
         return
 
     lines = [f"{item['category']}: {item['total_amount']}" for item in totals]
-    total_amount = sum([item['amount'] for item in totals])
+    total_amount = sum([item['total_amount'] for item in totals])
     answer = "Расходы по категориям с начала месяца:\n" + "\n".join(lines)
     answer += "\n" + f"Итого: {total_amount} сомон"
     await message.answer(answer)
@@ -53,7 +53,7 @@ async def month_stats_handler(message: Message):
         return
 
     lines = [f"{item['category']}: {item['total_amount']}" for item in totals]
-    total_amount = sum([item['amount'] for item in totals])
+    total_amount = sum([item['total_amount'] for item in totals])
     answer = "Расходы по категориям за сегодняшний день:\n" + "\n".join(lines)
     answer += "\n" + f"Итого: {total_amount} сомон"
     await message.answer(answer)
